@@ -6,11 +6,13 @@ using namespace boost;
 
 int main(){
   typedef adjacency_list<vecS,
-                         setS, //lots of searching for vertices, this may help?
+                         vecS,
                          directedS,
                          property<vertex_name_t, std::string> >  Graph;
   typedef graph_traits<Graph>::vertex_descriptor                 Vertex;
   typedef std::pair<graph_traits<Graph>::edge_descriptor, bool>  Edge;
+
+  std::map<std::string, Vertex> word_map;
 
   Graph g(0);
   Vertex u = add_vertex(g);
