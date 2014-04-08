@@ -23,6 +23,11 @@ int main(){
   property_map<Graph, vertex_name_t>::type vertex_words = get(vertex_name, g);
   std::map<std::string, Vertex> word_map; //use to quickly find vertices
 
+  //make starting vertex
+  Vertex v_start = add_vertex(g);
+  vertex_words[v_start] = "";
+  word_map.emplace("", v_start);
+
   //make vertices for periods and exclamation marks
   Vertex v_period = add_vertex(g);
   vertex_words[v_period] = ".";
@@ -30,6 +35,9 @@ int main(){
   Vertex v_excl = add_vertex(g);
   vertex_words[v_excl] = "!";
   word_map.emplace("!", v_excl);
+  Vertex v_ques = add_vertex(g);
+  vertex_words[v_ques] = "?";
+  word_map.emplace("?", v_ques);
 
   //get input and split on space
   std::string input;
@@ -47,9 +55,12 @@ int main(){
         c = '.';
       } else if (s.back() == '!'){
         c = '!';
+      } else if (s.back() == '?'){
+        c = '?';
       }
 
       trim_if(s, is_punct()); //remove grammatical marks
+      std::cout << s << " ";
       Vertex v;
       if(word_map.find(s) == word_map.end() && !s.empty()) { //currenty no vertex for word s
         //add vertex to graph, add string property, add string=>vertex to word_map
@@ -59,7 +70,9 @@ int main(){
       }
 
       //add edge for previous word to s
-      if(!first){
+      if(first){
+        add_edge(v_start, v, g);
+      } else {
         add_edge(prev, v, g);
       }
       first = false;
@@ -67,14 +80,20 @@ int main(){
 
       if(c == '.'){
         add_edge(v, v_period, g); //edge from word to period
+        std::cout << ". ";
         first = true; //next word is the first in a sentence
       } else if (c == '!'){
         add_edge(v, v_excl, g); //edge from word to exclamation mark
+        std::cout << "! ";
+        first = true;
+      } else if (c == '?'){
+        add_edge(v, v_ques, g);
+        std::cout << "? ";
         first = true;
       }
     }
   }
-
+  std::cout << std::endl;
 
   //output all edges
   Vertex v, u;
