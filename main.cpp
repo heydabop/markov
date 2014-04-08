@@ -29,14 +29,23 @@ int main(){
   std::vector<std::string> words;
   split(words, input, is_space());
 
+  bool first = true; //true if s is first word in line
+  Vertex prev; //previous Vertex added to graph
   for(auto s : words){
     trim_if(s, is_punct()); //remove grammatical marks
+    Vertex v;
     if(word_map.find(s) == word_map.end() && !s.empty()) { //currenty no vertex for word s
       //add vertex to graph, add string property, add string=>vertex to word_map
-      Vertex v = add_vertex(g);
+      v = add_vertex(g);
       vertex_words[v] = s;
       word_map.emplace(s, v);
     }
+    //add edge for previous word to s
+    if(!first){
+      add_edge(prev, v, g);
+    }
+    first = false;
+    prev = v;
   }
 
   std::cout << num_vertices(g) << " " << num_edges(g) << std::endl;
