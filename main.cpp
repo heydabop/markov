@@ -23,32 +23,51 @@ int main(){
   property_map<Graph, vertex_name_t>::type vertex_words = get(vertex_name, g);
   std::map<std::string, Vertex> word_map; //use to quickly find vertices
 
+  //make vertex for period
+  Vertex v_end = add_vertex(g);
+  vertex_words[v_end] = ".";
+  word_map.emplace(".", v_end);
+
   //get input and split on space
   std::string input;
-  std::getline(std::cin, input);
-  std::vector<std::string> words;
-  split(words, input, is_space());
+  while(std::getline(std::cin, input)){
+    std::vector<std::string> words;
+    split(words, input, is_space());
 
-  bool first = true; //true if s is first word in line
-  Vertex prev; //previous Vertex added to graph
-  for(auto s : words){
-    trim_if(s, is_punct()); //remove grammatical marks
-    Vertex v;
-    if(word_map.find(s) == word_map.end() && !s.empty()) { //currenty no vertex for word s
-      //add vertex to graph, add string property, add string=>vertex to word_map
-      v = add_vertex(g);
-      vertex_words[v] = s;
-      word_map.emplace(s, v);
+    bool first = true; //true if s is first word in line
+    Vertex prev; //previous Vertex added to graph
+    for(auto s : words){
+
+      bool end = false;
+      if(s.back() == '.'){
+        end = true;
+      }
+
+      trim_if(s, is_punct()); //remove grammatical marks
+      Vertex v;
+      if(word_map.find(s) == word_map.end() && !s.empty()) { //currenty no vertex for word s
+        //add vertex to graph, add string property, add string=>vertex to word_map
+        v = add_vertex(g);
+        vertex_words[v] = s;
+        word_map.emplace(s, v);
+      }
+
+      //add edge for previous word to s
+      if(!first){
+        add_edge(prev, v, g);
+      }
+      first = false;
+      prev = v;
+
+      if(end){
+        add_edge(v, v_end, g);
+      }
     }
-    //add edge for previous word to s
-    if(!first){
-      add_edge(prev, v, g);
-    }
-    first = false;
-    prev = v;
   }
 
   std::cout << num_vertices(g) << " " << num_edges(g) << std::endl;
+
+  
 
   return 0;
 }
