@@ -27,11 +27,11 @@ int main(){
   std::string input;
   std::getline(std::cin, input);
   std::vector<std::string> words;
-  split(words, input, is_any_of(" "));
+  split(words, input, is_space());
 
   for(auto s : words){
-    trim_right_if(s, is_any_of(",.!?")); //remove grammatical marks
-    if(word_map.find(s) == word_map.end()) { //currenty no vertex for word s
+    trim_if(s, is_punct()); //remove grammatical marks
+    if(word_map.find(s) == word_map.end() && !s.empty()) { //currenty no vertex for word s
       //add vertex to graph, add string property, add string=>vertex to word_map
       Vertex v = add_vertex(g);
       vertex_words[v] = s;
