@@ -1,0 +1,1 @@
+An uneducated attempt at using Markov chains to generate sentences.
