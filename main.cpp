@@ -23,10 +23,13 @@ int main(){
   property_map<Graph, vertex_name_t>::type vertex_words = get(vertex_name, g);
   std::map<std::string, Vertex> word_map; //use to quickly find vertices
 
-  //make vertex for period
-  Vertex v_end = add_vertex(g);
-  vertex_words[v_end] = ".";
-  word_map.emplace(".", v_end);
+  //make vertices for periods and exclamation marks
+  Vertex v_period = add_vertex(g);
+  vertex_words[v_period] = ".";
+  word_map.emplace(".", v_period);
+  Vertex v_excl = add_vertex(g);
+  vertex_words[v_excl] = "!";
+  word_map.emplace("!", v_excl);
 
   //get input and split on space
   std::string input;
@@ -38,9 +41,12 @@ int main(){
     Vertex prev; //previous Vertex added to graph
     for(auto s : words){
 
-      bool end = false;
+      char c = 0;
+      //remember if word is end of sentence
       if(s.back() == '.'){
-        end = true;
+        c = '.';
+      } else if (s.back() == '!'){
+        c = '!';
       }
 
       trim_if(s, is_punct()); //remove grammatical marks
@@ -59,8 +65,12 @@ int main(){
       first = false;
       prev = v;
 
-      if(end){
-        add_edge(v, v_end, g);
+      if(c == '.'){
+        add_edge(v, v_period, g); //edge from word to period
+        first = true; //next word is the first in a sentence
+      } else if (c == '!'){
+        add_edge(v, v_excl, g); //edge from word to exclamation mark
+        first = true;
       }
     }
   }
