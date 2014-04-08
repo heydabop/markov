@@ -45,6 +45,11 @@ int main(){
     std::vector<std::string> words;
     split(words, input, is_space());
 
+    /*for(auto s : words){
+      std::cout << s << " ";
+    }
+    std::cout << std::endl;*/
+
     bool first = true; //true if s is first word in line
     Vertex prev; //previous Vertex added to graph
     for(auto s : words){
@@ -60,40 +65,44 @@ int main(){
       }
 
       trim_if(s, is_punct()); //remove grammatical marks
-      std::cout << s << " ";
-      Vertex v;
-      if(word_map.find(s) == word_map.end() && !s.empty()) { //currenty no vertex for word s
-        //add vertex to graph, add string property, add string=>vertex to word_map
-        v = add_vertex(g);
-        vertex_words[v] = s;
-        word_map.emplace(s, v);
-      }
+      if(!s.empty()){ //do nothing if s is empty
+        //std::cout << s << " ";
+        std::map<std::string, Vertex>::iterator mit = word_map.find(s);
+        if(mit == word_map.end()) { //currenty no vertex for word s
+          //add vertex to graph, add string property, add string=>vertex to word_map
+          Vertex v = add_vertex(g);
+          vertex_words[v] = s;
+          word_map.emplace(s, v);
+        }
+        Vertex v = mit->second;
 
-      //add edge for previous word to s
-      if(first){
-        add_edge(v_start, v, g);
-      } else {
-        add_edge(prev, v, g);
-      }
-      first = false;
-      prev = v;
+        //add edge for previous word to s
+        if(first){
+          add_edge(v_start, v, g);
+        } else {
+          add_edge(prev, v, g);
+        }
+        first = false;
+        prev = v;
 
-      if(c == '.'){
-        add_edge(v, v_period, g); //edge from word to period
-        std::cout << ". ";
-        first = true; //next word is the first in a sentence
-      } else if (c == '!'){
-        add_edge(v, v_excl, g); //edge from word to exclamation mark
-        std::cout << "! ";
-        first = true;
-      } else if (c == '?'){
-        add_edge(v, v_ques, g);
-        std::cout << "? ";
-        first = true;
+        if(c == '.'){
+          add_edge(v, v_period, g); //edge from word to period
+          //std::cout << ". ";
+          first = true; //next word is the first in a sentence
+        } else if (c == '!'){
+          add_edge(v, v_excl, g); //edge from word to exclamation mark
+          //std::cout << "! ";
+          first = true;
+        } else if (c == '?'){
+          add_edge(v, v_ques, g);
+          //std::cout << "? ";
+          first = true;
+        }
       }
     }
+    //std::cout << "done" << std::endl << std::endl;
   }
-  std::cout << std::endl;
+  //std::cout << std::endl;
 
   //output all edges
   Vertex v, u;
