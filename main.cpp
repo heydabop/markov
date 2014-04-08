@@ -6,6 +6,7 @@
 
 #include<boost/algorithm/string/classification.hpp>
 #include<boost/algorithm/string/split.hpp>
+#include<boost/algorithm/string/trim.hpp>
 
 using namespace boost;
 
@@ -29,6 +30,7 @@ int main(){
   split(words, input, is_any_of(" "));
 
   for(auto s : words){
+    trim_right_if(s, is_any_of(",.!?")); //remove grammatical marks
     if(word_map.find(s) == word_map.end()) { //currenty no vertex for word s
       //add vertex to graph, add string property, add string=>vertex to word_map
       Vertex v = add_vertex(g);
