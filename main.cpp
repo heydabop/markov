@@ -75,9 +75,17 @@ int main(){
     }
   }
 
-  std::cout << num_vertices(g) << " " << num_edges(g) << std::endl;
 
-  
+  //output all edges
+  Vertex v, u;
+  typedef graph_traits<Graph>::edge_iterator  edge_iter;
+  std::pair<edge_iter, edge_iter> ep;
+  edge_iter ei, ei_end;
+  for(tie(ei, ei_end) = edges(g); ei != ei_end; ++ei){
+    std::cout << vertex_words[source(*ei, g)] << " -> " << vertex_words[target(*ei, g)] << ";" << std::endl;
+  }
+
+  std::cout << num_vertices(g) << " " << num_edges(g) << std::endl;
 
   return 0;
 }
