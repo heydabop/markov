@@ -1,6 +1,7 @@
 #include<iostream>
 #include<utility>
 #include<vector>
+#include<random>
 
 #include<boost/graph/adjacency_list.hpp>
 
@@ -113,7 +114,24 @@ int main(){
     std::cout << vertex_words[source(*ei, g)] << " -> " << vertex_words[target(*ei, g)] << ";" << std::endl;
   }
 
-  std::cout << num_vertices(g) << " " << num_edges(g) << std::endl;
+  std::cout << num_vertices(g) << " " << num_edges(g) << std::endl << std::endl;
+
+  Vertex current = v_start;
+  int d = 0;
+  while((d = out_degree(current, g)) != 0){
+    //this is probably really slow
+    std::random_device rand;
+    std::mt19937 gen(rand());
+    std::uniform_int_distribution<> dis(0, d-1);
+
+    int i = dis(gen);
+
+    std::cout << d << " " << i << std::endl;
+
+    graph_traits<Graph>::out_edge_iterator oet = out_edges(current, g).first;
+    Vertex current = target(*(oet + i), g);
+    std::cout << vertex_words[current] << " ";
+  }
 
   return 0;
 }
