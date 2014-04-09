@@ -11,13 +11,21 @@
 
 using namespace boost;
 
-int main(){
+int main(int argc, char** argv){
   typedef adjacency_list<vecS,
                          vecS,
                          directedS,
                          property<vertex_name_t, std::string> >  Graph;
   typedef graph_traits<Graph>::vertex_descriptor                 Vertex;
   typedef std::pair<graph_traits<Graph>::edge_descriptor, bool>  Edge;
+
+  long sentences = 1;
+  if(argc == 2){
+    sentences = strtol(argv[1], NULL, 10);
+    if(sentences < 1){
+      std::cerr << "The number of sentences to be generated must be positive.\n";
+    }
+  }
 
   Graph g(0);
 
@@ -116,23 +124,25 @@ int main(){
 
   std::cout << num_vertices(g) << " " << num_edges(g) << std::endl << std::endl;
 
-  Vertex current = v_start;
-  int d = 0;
-  while((d = out_degree(current, g)) != 0){
-    //this is probably really slow
-    std::random_device rand;
-    std::mt19937 gen(rand());
-    std::uniform_int_distribution<> dis(0, d-1);
+  for(long i = 0; i < sentences; ++i){
+    Vertex current = v_start;
+    int d = 0;
+    while((d = out_degree(current, g)) != 0){
+      //this is probably really slow
+      std::random_device rand;
+      std::mt19937 gen(rand());
+      std::uniform_int_distribution<> dis(0, d-1);
 
-    int i = dis(gen);
+      int i = dis(gen);
 
-    //std::cout << d << " " << i << std::endl;
+      //std::cout << d << " " << i << std::endl;
 
-    graph_traits<Graph>::out_edge_iterator oet = out_edges(current, g).first;
-    current = target(*(oet + i), g);
-    std::cout << " " << vertex_words[current];
+      graph_traits<Graph>::out_edge_iterator oet = out_edges(current, g).first;
+      current = target(*(oet + i), g);
+      std::cout << " " << vertex_words[current];
+    }
+    std::cout << std::endl;
   }
-  std::cout << std::endl;
 
   return 0;
 }
