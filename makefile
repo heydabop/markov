@@ -1,7 +1,7 @@
 CXX = g++
 CXX_FLAGS = -std=c++11 -O2
 
-all: main
+all: 1-markov
 
 #generic rule
 %: %.cpp
