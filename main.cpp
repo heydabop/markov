@@ -26,8 +26,8 @@ int main(){
 
   //make starting vertex
   Vertex v_start = add_vertex(g);
-  vertex_words[v_start] = "";
-  word_map.emplace("", v_start);
+  vertex_words[v_start] = "_";
+  word_map.emplace("_", v_start);
 
   //make vertices for periods and exclamation marks
   Vertex v_period = add_vertex(g);
@@ -68,14 +68,14 @@ int main(){
       trim_if(s, is_punct()); //remove grammatical marks
       if(!s.empty()){ //do nothing if s is empty
         //std::cout << s << " ";
-        std::map<std::string, Vertex>::iterator mit = word_map.find(s);
-        if(mit == word_map.end()) { //currenty no vertex for word s
+        if(word_map.find(s) == word_map.end()) { //currenty no vertex for word s
           //add vertex to graph, add string property, add string=>vertex to word_map
           Vertex v = add_vertex(g);
           vertex_words[v] = s;
           word_map.emplace(s, v);
         }
-        Vertex v = mit->second;
+        //std::cout << "\"" << s << "\"" << std::endl;
+        Vertex v = word_map.find(s)->second;
 
         //add edge for previous word to s
         if(first){
@@ -126,7 +126,7 @@ int main(){
 
     int i = dis(gen);
 
-    std::cout << d << " " << i << std::endl;
+    //std::cout << d << " " << i << std::endl;
 
     graph_traits<Graph>::out_edge_iterator oet = out_edges(current, g).first;
     Vertex current = target(*(oet + i), g);
