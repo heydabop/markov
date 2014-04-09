@@ -116,8 +116,6 @@ int main(){
 
   std::cout << num_vertices(g) << " " << num_edges(g) << std::endl << std::endl;
 
-  return 0;
-
   Vertex current = v_start;
   int d = 0;
   while((d = out_degree(current, g)) != 0){
@@ -131,9 +129,10 @@ int main(){
     //std::cout << d << " " << i << std::endl;
 
     graph_traits<Graph>::out_edge_iterator oet = out_edges(current, g).first;
-    Vertex current = target(*(oet + i), g);
-    std::cout << vertex_words[current] << " ";
+    current = target(*(oet + i), g);
+    std::cout << " " << vertex_words[current];
   }
+  std::cout << std::endl;
 
   return 0;
 }
