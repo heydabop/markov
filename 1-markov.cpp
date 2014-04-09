@@ -60,7 +60,7 @@ int main(int argc, char** argv){
     std::cout << std::endl;*/
 
     bool first = true; //true if s is first word in line
-    Vertex prev; //previous Vertex added to graph
+    Vertex prev = graph_traits<Graph>::null_vertex(); //previous Vertex added to graph
     for(auto s : words){
 
       char c = 0;
@@ -115,7 +115,8 @@ int main(int argc, char** argv){
 
 #ifdef GRAPHVIZ
   //output all edges
-  Vertex v, u;
+  Vertex v = graph_traits<Graph>::null_vertex();
+  Vertex u = graph_traits<Graph>::null_vertex();
   typedef graph_traits<Graph>::edge_iterator  edge_iter;
   std::pair<edge_iter, edge_iter> ep;
   edge_iter ei, ei_end;
