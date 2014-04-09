@@ -113,6 +113,7 @@ int main(int argc, char** argv){
   }
   //std::cout << std::endl;
 
+#ifdef GRAPHVIZ
   //output all edges
   Vertex v, u;
   typedef graph_traits<Graph>::edge_iterator  edge_iter;
@@ -121,6 +122,7 @@ int main(int argc, char** argv){
   for(tie(ei, ei_end) = edges(g); ei != ei_end; ++ei){
     std::cout << "\"" << vertex_words[source(*ei, g)] << "\" -> \"" << vertex_words[target(*ei, g)] << "\";" << std::endl;
   }
+#endif
 
   std::cout << num_vertices(g) << " " << num_edges(g) << std::endl << std::endl;
 
@@ -139,7 +141,7 @@ int main(int argc, char** argv){
 
       graph_traits<Graph>::out_edge_iterator oet = out_edges(current, g).first;
       current = target(*(oet + i), g);
-      std::cout << " " << vertex_words[current];
+      std::cout << vertex_words[current] << " ";
     }
     std::cout << std::endl;
   }
