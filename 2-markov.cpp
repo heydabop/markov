@@ -12,6 +12,8 @@
 using namespace boost;
 
 int main(int argc, char** argv){
+  //first is the current word of the vertex, second is the word that preceeded it
+  //this may not be necessary, the pair may only be needed in word_map
   typedef property<vertex_name_t, std::pair<std::string,
                                             std::string> >      Vertex_property;
   typedef adjacency_list<vecS,
@@ -36,6 +38,7 @@ int main(int argc, char** argv){
 
   //make starting vertex
   Vertex v_start = add_vertex(g);
+  //use "-" as placeholder for no preceeding word or not caring
   vertex_words[v_start] = std::make_pair("_", "-");
   word_map.emplace(std::make_pair("_", "-"), v_start);
 
@@ -63,7 +66,7 @@ int main(int argc, char** argv){
 
     bool first = true; //true if s is first word in line
     Vertex prev = graph_traits<Graph>::null_vertex(); //previous Vertex added to graph
-    std::string p_word = "_";
+    std::string p_word = vertex_words[v_start].first; //previous word in sentence
     for(auto s : words){
 
       char c = 0;
@@ -79,8 +82,9 @@ int main(int argc, char** argv){
       trim_if(s, is_punct()); //remove grammatical marks
       if(!s.empty()){ //do nothing if s is empty
         //std::cout << s << " ";
-        if(word_map.find(std::make_pair(s, p_word)) == word_map.end()) { //currenty no vertex for word s
-          //add vertex to graph, add string property, add string=>vertex to word_map
+        if(word_map.find(std::make_pair(s, p_word)) == word_map.end()) {
+          //currenty no vertex for word s preceeded by p_word
+          //add vertex to graph, add string property, add (string,string)=>vertex to word_map
           Vertex v = add_vertex(g);
           vertex_words[v] = std::make_pair(s, p_word);;
           word_map.emplace(std::make_pair(s, p_word), v);
