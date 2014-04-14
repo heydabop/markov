@@ -4,6 +4,7 @@
 #include<random>
 
 #include<boost/graph/adjacency_list.hpp>
+#include<boost/graph/copy.hpp>
 
 #include<boost/algorithm/string/classification.hpp>
 #include<boost/algorithm/string/split.hpp>
@@ -15,7 +16,8 @@ int main(int argc, char** argv){
   typedef adjacency_list<vecS,
                          vecS,
                          directedS,
-                         property<vertex_name_t, std::string> >  Graph;
+                         property<vertex_name_t, std::string>,
+                         property<edge_name_t, double> >  Graph;
   typedef graph_traits<Graph>::vertex_descriptor                 Vertex;
   typedef std::pair<graph_traits<Graph>::edge_descriptor, bool>  Edge;
 
@@ -114,18 +116,62 @@ int main(int argc, char** argv){
   //std::cout << std::endl;
 
 #ifdef GRAPHVIZ
+
+  //for the sake of conciseness, get rid of all paralell edges and instead
+  //label edges with the probability/proportion that they'll be taken
+  typedef adjacency_list<vecS,
+                         vecS,
+                         directedS,
+                         property<vertex_name_t, std::string>,
+                         property<edge_name_t, double> >            Graph_Viz;
+  typedef graph_traits<Graph_Viz>::vertex_descriptor                Vertex_Viz;
+  typedef std::pair<graph_traits<Graph_Viz>::edge_descriptor, bool> Edge_Viz;
+
+  Graph_Viz gv;
+  copy_graph(g, gv);
+
+  property_map<Graph_Viz, edge_name_t>::type edge_probs = get(edge_name, gv);
+
+
+  typedef graph_traits<Graph_Viz>::vertex_iterator    vertex_iter;
+  typedef graph_traits<Graph_Viz>::out_edge_iterator  out_edge_iter;
+  typedef std::map<Vertex_Viz, int>::iterator         map_iter;
+
+  std::pair<vertex_iter, vertex_iter> vp;
+  vertex_iter vi, vi_end;
+  for(tie(vi, vi_end) = vertices(gv); vi != vi_end; ++vi){
+    //keep a mapping of target vertices to number of edges to the vertex
+    std::map<Vertex_Viz, int> edges;
+
+    std::pair<out_edge_iter, out_edge_iter> oep;
+    out_edge_iter oei, oei_end;
+    for(tie(oei, oei_end) = out_edges(*vi, gv); oei != oei_end; ++oei){
+      map_iter vertex = edges.emplace(target(*oei, gv), 0).first;
+      vertex->second++;
+      remove_edge(oei, gv);
+    }
+    boost::graph_traits<Graph_Viz>::degree_size_type
+                         num_out_edges = out_degree(*vi, gv);
+
+    for(auto tv : edges){
+      Edge e = add_edge(*vi, tv.first, gv);
+      edge_probs[e.first] = tv.second;
+    }
+  }
+
   //output all edges
-  Vertex v = graph_traits<Graph>::null_vertex();
-  Vertex u = graph_traits<Graph>::null_vertex();
-  typedef graph_traits<Graph>::edge_iterator  edge_iter;
+  Vertex v = graph_traits<Graph_Viz>::null_vertex();
+  Vertex u = graph_traits<Graph_Viz>::null_vertex();
+  typedef graph_traits<Graph_Viz>::edge_iterator edge_iter;
   std::pair<edge_iter, edge_iter> ep;
   edge_iter ei, ei_end;
-  for(tie(ei, ei_end) = edges(g); ei != ei_end; ++ei){
-    std::cout << "\"" << vertex_words[source(*ei, g)] << "\" -> \"" << vertex_words[target(*ei, g)] << "\";" << std::endl;
+  for(tie(ei, ei_end) = edges(gv); ei != ei_end; ++ei){
+    std::cout << "\"" << vertex_words[source(*ei, gv)] << "\" -> \"" << vertex_words[target(*ei, gv)] << "\";" << std::endl;
   }
 #endif
 
   std::cout << num_vertices(g) << " " << num_edges(g) << std::endl << std::endl;
+  std::cout << num_vertices(gv) << " " << num_edges(gv) << std::endl << std::endl;
 
   for(long i = 0; i < sentences; ++i){
     Vertex current = v_start;

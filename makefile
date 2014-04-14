@@ -1,5 +1,5 @@
-CXX = g++
-CXX_FLAGS = -std=c++11 -O2
+CXX = clang++
+CXX_FLAGS = -std=c++11 -O2 -DGRAPHVIZ
 
 all: 1-markov.out 2-markov.out
 
