@@ -143,6 +143,9 @@ int main(int argc, char** argv){
     //keep a mapping of target vertices to number of edges to the vertex
     std::map<Vertex_Viz, int> edges;
 
+    boost::graph_traits<Graph_Viz>::degree_size_type
+      num_out_edges = out_degree(*vi, gv);
+
     std::pair<out_edge_iter, out_edge_iter> oep;
     out_edge_iter oei, oei_end;
     for(tie(oei, oei_end) = out_edges(*vi, gv); oei != oei_end; ++oei){
@@ -150,8 +153,6 @@ int main(int argc, char** argv){
       vertex->second++;
       remove_edge(oei, gv);
     }
-    boost::graph_traits<Graph_Viz>::degree_size_type
-                         num_out_edges = out_degree(*vi, gv);
 
     for(auto tv : edges){
       Edge e = add_edge(*vi, tv.first, gv);
