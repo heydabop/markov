@@ -155,7 +155,7 @@ int main(int argc, char** argv){
 
     for(auto tv : edges){
       Edge e = add_edge(*vi, tv.first, gv);
-      edge_probs[e.first] = tv.second;
+      edge_probs[e.first] = tv.second / (num_out_edges * 1.0);
     }
   }
 
@@ -166,7 +166,9 @@ int main(int argc, char** argv){
   std::pair<edge_iter, edge_iter> ep;
   edge_iter ei, ei_end;
   for(tie(ei, ei_end) = edges(gv); ei != ei_end; ++ei){
-    std::cout << "\"" << vertex_words[source(*ei, gv)] << "\" -> \"" << vertex_words[target(*ei, gv)] << "\";" << std::endl;
+    std::cout << "\"" << vertex_words[source(*ei, gv)] << "\" -> \"" <<
+      vertex_words[target(*ei, gv)] <<
+      "\" [label = \"" << edge_probs[*ei] << "\"];" << std::endl;
   }
 #endif
 
