@@ -151,8 +151,9 @@ int main(int argc, char** argv){
     for(tie(oei, oei_end) = out_edges(*vi, gv); oei != oei_end; ++oei){
       map_iter vertex = edges.emplace(target(*oei, gv), 0).first;
       vertex->second++;
-      remove_edge(oei, gv);
     }
+
+    clear_out_edges(*vi, gv);
 
     for(auto tv : edges){
       Edge e = add_edge(*vi, tv.first, gv);
