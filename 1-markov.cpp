@@ -167,6 +167,8 @@ int main(int argc, char** argv){
   typedef graph_traits<Graph_Viz>::edge_iterator edge_iter;
   std::pair<edge_iter, edge_iter> ep;
   edge_iter ei, ei_end;
+  std::cout.unsetf(std::ios::floatfield);
+  std::cout.precision(3);
   for(tie(ei, ei_end) = edges(gv); ei != ei_end; ++ei){
     std::cout << "\"" << vertex_words[source(*ei, gv)] << "\" -> \"" <<
       vertex_words[target(*ei, gv)] <<
