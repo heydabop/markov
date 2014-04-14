@@ -140,7 +140,7 @@ int main(int argc, char** argv){
 
   for(long i = 0; i < sentences; ++i){
     Vertex current = v_start;
-    int d = 0;
+    boost::graph_traits<Graph>::degree_size_type d = 0;
     while((d = out_degree(current, g)) != 0){
       //this is probably really slow
       std::random_device rand;
