@@ -177,7 +177,9 @@ int main(int argc, char** argv){
 #endif
 
   std::cout << num_vertices(g) << " " << num_edges(g) << std::endl << std::endl;
+#ifdef GRAPHVIZ
   std::cout << num_vertices(gv) << " " << num_edges(gv) << std::endl << std::endl;
+#endif
 
   for(long i = 0; i < sentences; ++i){
     Vertex current = v_start;
